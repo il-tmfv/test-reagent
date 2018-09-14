@@ -14,13 +14,17 @@
 )
 
 (defn counter-simple []
-  [:div (str @count*)])
+  [:div (str @count* " simple")])
 
 ;; only this one do not work
-(defn counter-with-fn []
-  (let [display-value (str @count* " will not work")]
+(defn counter-with-let-and-fn []
+  (let [display-value (str @count* " with let and fn (will not work)")]
     (fn []
       [:div display-value])))
+
+(defn counter-with-let []
+  (let [display-value (str @count* " with let, but without fn")]
+    [:div display-value]))
 
 (defn counter-with-track []
   (let [display-value (track (fn [] (str @count* " with track")))]
@@ -45,7 +49,8 @@
   [:div
    [inc-button]
    [counter-simple]
-   [counter-with-fn]
+   [counter-with-let-and-fn]
+   [counter-with-let]
    [counter-with-track]
    [counter-with-reaction]
    [counter-with-formatting-fn]])
