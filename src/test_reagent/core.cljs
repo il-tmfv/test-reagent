@@ -14,6 +14,13 @@
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
 
+(defn counter-with-with-let [c]
+  (r/with-let [inited-str "inited in with-let"]
+    [:div (str c " with with-let (passes prop) - " inited-str)]))
+
+(defn wrapper-for-counter-with-with-let []
+  [counter-with-with-let @count*])
+
 (defn counter-simple []
   [:div (str @count* " simple")])
 
@@ -70,6 +77,10 @@
    [:hr]
    [:div "add-watch test"]
    [:button {:on-click #(swap! show-counter-with-state* not)} "toggle"]
-   (when @show-counter-with-state* [counter-with-state "id1"])])
+   (when @show-counter-with-state* [counter-with-state "id1"])
+   [:hr]
+   [:div "with-let test"]
+   [wrapper-for-counter-with-with-let]
+   ])
 
 (r/render [app] (.getElementById js/document "app"))
