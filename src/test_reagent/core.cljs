@@ -65,6 +65,19 @@
        [:div @state]
        [:button {:on-click #(swap! state inc)} "+1"]])))
 
+(defn counter-with-watcher-for-prop [id value*]
+  ; with-let is important here, need to call remove-watch coz value came from the outside
+  (r/with-let [_ (add-watch
+                  value*
+                  :watch
+                  (fn [_ _ _ new-state]
+                    (println (str "Atom " id " changed: " new-state))))]
+    [:div
+     [:div @value*]
+     [:button {:on-click #(swap! value* inc)} "+1"]]
+    (finally
+      (remove-watch value* :watch))))
+
 (defn app []
   [:div
    [inc-button]
@@ -78,6 +91,7 @@
    [:div "add-watch test"]
    [:button {:on-click #(swap! show-counter-with-state* not)} "toggle"]
    (when @show-counter-with-state* [counter-with-state "id1"])
+   (when @show-counter-with-state* [counter-with-watcher-for-prop "id2" count*])
    [:hr]
    [:div "with-let test"]
    [wrapper-for-counter-with-with-let]
