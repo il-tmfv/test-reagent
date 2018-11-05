@@ -4,9 +4,10 @@
 
 (enable-console-print!)
 
-(defonce app-state* (r/atom {:count 0 :show-counter-with-state true}))
+(defonce app-state* (r/atom {:count 0 :show-counter-with-state true :second-id "id2"}))
 (def count* (cursor app-state* [:count]))
 (def show-counter-with-state* (cursor app-state* [:show-counter-with-state]))
+(def second-id* (cursor app-state* [:second-id]))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
@@ -78,6 +79,9 @@
     (finally
       (remove-watch value* :watch))))
 
+(defn id-increment []
+  [:button {:on-click #(swap! second-id* str "+")} "inc id2"])
+
 (defn app []
   [:div
    [inc-button]
@@ -90,8 +94,9 @@
    [:hr]
    [:div "add-watch test"]
    [:button {:on-click #(swap! show-counter-with-state* not)} "toggle"]
+   [id-increment]
    (when @show-counter-with-state* [counter-with-state "id1"])
-   (when @show-counter-with-state* [counter-with-watcher-for-prop "id2" count*])
+   (when @show-counter-with-state* [counter-with-watcher-for-prop @second-id* count*])
    [:hr]
    [:div "with-let test"]
    [wrapper-for-counter-with-with-let]
